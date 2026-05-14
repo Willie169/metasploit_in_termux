@@ -77,7 +77,11 @@ NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/
 #  for sake of simplicity tweaking cflags is better than declaring a void function for every c file
 
 gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-function-declaration -Wno-deprecated-declarations -Wno-incompatible-function-pointer-types" --use-system-libraries
-bundle install
+
+# Fix bundler error
+BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
+gem install bundler -v "${BUNDLER_VERSION}"
+
 gem install actionpack
 bundle update activesupport
 bundle update --bundler
