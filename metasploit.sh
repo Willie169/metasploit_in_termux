@@ -82,6 +82,16 @@ gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-functi
 BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
 gem install bundler -v "${BUNDLER_VERSION}"
 
+# Fix sqlite3 error
+SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
+git clone https://github.com/sparklemotion/sqlite3-ruby.git
+cd sqlite3-ruby
+git checkout "v${SQLITE3_VERSION}"
+gem build sqlite3.gemspec
+gem install "sqlite3-${SQLITE3_VERSION}.gem" -- --enable-system-libraries
+cd ..
+bundle config set path.system true
+
 gem install actionpack
 bundle update activesupport
 bundle update --bundler
