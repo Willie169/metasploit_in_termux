@@ -45,6 +45,10 @@ DEBIAN_FRONTEND=noninteractive pkg upgrade -y -o Dpkg::Options::="--force-confne
 pkg install -y binutils python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew"
 python3 -m pip install requests
 
+# Fix Ruby 3.4.0 & Nokogiri by qrt2
+# https://github.com/qrt2/msf-termux-ruby34
+find $PREFIX/include -name rbasic.h -exec sed -i 's/const VALUE klass;/VALUE klass;/g' {} +
+
 # Fix ruby BigDecimal
 #center "* Fix ruby BigDecimal"
 #source <(curl -sL https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt)
