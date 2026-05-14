@@ -36,7 +36,7 @@ source <(echo "c3Bpbm5lcj0oICd8JyAnLycgJy0nICdcJyApOwoKY291bnQoKXsKICBzcGluICYKI
 # Dependencies Installation
 center "* Dependencies installation..."
 # Skip mirror selection if sources.list is already configured (for CI)
-if ! grep -q "packages.termux.dev" /data/data/com.termux/files/usr/etc/apt/sources.list 2>/dev/null; then
+if ! grep -q "gnlug.org" /data/data/com.termux/files/usr/etc/apt/sources.list 2>/dev/null; then
   pkg update -y
 else
   apt update -y
@@ -45,7 +45,7 @@ DEBIAN_FRONTEND=noninteractive pkg upgrade -y -o Dpkg::Options::="--force-confne
 pkg install -y binutils python autoconf bison clang coreutils curl findutils apr apr-util postgresql openssl readline libffi libgmp libpcap libsqlite libgrpc libtool libxml2 libxslt ncurses make ncurses-utils ncurses git wget unzip zip tar termux-tools termux-elf-cleaner pkg-config git ruby -o Dpkg::Options::="--force-confnew"
 python3 -m pip install requests
 
-# Fix ruby BigDecimal 
+# Fix ruby BigDecimal
 #center "* Fix ruby BigDecimal"
 #source <(curl -sL https://github.com/termux/termux-packages/files/2912002/fix-ruby-bigdecimal.sh.txt)
 
@@ -67,9 +67,9 @@ center "* Installation..."
 cd ${PREFIX}/opt/metasploit-framework
 gem install bundler
 NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oP "(.).[[:digit:]][\w+]?[.].")
-# by overriding cflags nokogiri will install or you can simply declare a void function 
+# by overriding cflags nokogiri will install or you can simply declare a void function
 #  you might have seen this error while installing nokogiri `xmlSetStructuredErrorFunc((void *)rb_error_list, Nokogiri_error_array_pusher);`
-#  solution : void xmlSetStructuredErrorFunc(void *rb_error_list, void *Nokogiri_error_array_pusher); you can set any parameter name 
+#  solution : void xmlSetStructuredErrorFunc(void *rb_error_list, void *Nokogiri_error_array_pusher); you can set any parameter name
 #  for sake of simplicity tweaking cflags is better than declaring a void function for every c file
 
 gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-function-declaration -Wno-deprecated-declarations -Wno-incompatible-function-pointer-types" --use-system-libraries

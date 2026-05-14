@@ -32,9 +32,8 @@ jobs:
 
           # Domains your installer typically needs
           domains=(
-            packages.termux.dev
+            gnlug.org
             raw.githubusercontent.com
-            packages-cf.termux.dev
             termux.dev
             github.com
             rubygems.org
@@ -59,7 +58,7 @@ jobs:
           cat "$HOSTS"
 
           # Fail early if we couldn't resolve critical domains on the host
-          critical=(packages.termux.dev raw.githubusercontent.com github.com rubygems.org)
+          critical=(gnlug.org raw.githubusercontent.com github.com rubygems.org)
           for c in "${critical[@]}"; do
             if ! grep -q " $c$" "$HOSTS"; then
               echo "ERROR: Could not resolve critical domain: $c"
@@ -94,8 +93,8 @@ jobs:
           id=$(docker ps -q -f name=termux)
           docker exec -u system "$id" bash -lc '
             set -eux
-            # Use primary Termux mirror (bypasses pkg mirror selection)
-            echo "deb https://packages.termux.dev/apt/termux-main stable main" > /data/data/com.termux/files/usr/etc/apt/sources.list
+            # Use GNLUG Termux mirror (bypasses pkg mirror selection)
+            echo "deb https://gnlug.org/pub/termux/termux-main stable main" > /data/data/com.termux/files/usr/etc/apt/sources.list
             apt update -y
             DEBIAN_FRONTEND=noninteractive apt install -y curl git libssh2 -o Dpkg::Options::="--force-confnew"
           '
