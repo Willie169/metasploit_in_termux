@@ -102,6 +102,11 @@ center "* Fixing ActionView version compatibility..."
 # Disable the version check entirely since ActionView 8.x might not need the monkey patch
 sed -i 's/raise unless ActionView::VERSION::STRING == .*$/# Version check disabled for ARM64 compatibility/' config/application.rb
 
+# termux-fix-shebang
+termux-fix-shebang ${PREFIX}/opt/metasploit-framework/msfconsole
+termux-fix-shebang ${PREFIX}/opt/metasploit-framework/msfvenom
+termux-fix-shebang ${PREFIX}/opt/metasploit-framework/msfrpcd
+
 # Link Metasploit Executables
 ln -sf ${PREFIX}/opt/metasploit-framework/msfconsole ${PREFIX}/bin/
 ln -sf ${PREFIX}/opt/metasploit-framework/msfvenom ${PREFIX}/bin/
