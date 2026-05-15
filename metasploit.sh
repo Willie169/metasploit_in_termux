@@ -37,7 +37,7 @@ source <(echo "c3Bpbm5lcj0oICd8JyAnLycgJy0nICdcJyApOwoKY291bnQoKXsKICBzcGluICYKI
 # Dependencies Installation
 center "* Dependencies installation..."
 # Skip mirror selection if sources.list is already configured (for CI)
-if ! grep -q "gnlug.org" /data/data/com.termux/files/usr/etc/apt/sources.list 2>/dev/null; then
+if ! grep -q "packages.termux.dev" /data/data/com.termux/files/usr/etc/apt/sources.list 2>/dev/null; then
   pkg update -y
 else
   apt update -y
