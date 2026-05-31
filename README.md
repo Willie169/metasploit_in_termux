@@ -46,7 +46,9 @@ Before my forking, the original repo couldn't pass GitHub Actions CI Testing and
 - Go to `~` at start.
 - Expand the GitHub Action CI testing to cover the `arm` architecture
 
-GitHub Actions CI Testing now run without error on both `arm` and `aarch64` architechture.
+GitHub Actions CI Testing now run without error on both `arm` and `aarch64` architechture: <https://github.com/Willie169/metasploit_in_termux/actions/runs/26710048886>.
+
+See <https://github.com/gushmazuko/metasploit_in_termux/issues/304#issuecomment-4586429141>.
 
 ## Credits
 
