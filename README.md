@@ -1,6 +1,6 @@
 # Metasploit in Termux
 
-[![GitHub Actions CI](https://github.com/Willie169/metasploit_in_termux/actions/workflows/termux-metasploit-arm64.yml/badge.svg)](https://github.com/Willie169/metasploit_in_termux/actions/workflows/termux-metasploit-arm64.yml)
+[![GitHub Actions CI](https://github.com/Willie169/metasploit_in_termux/actions/workflows/metasploit_in_termux_test.yml/badge.svg)](https://github.com/Willie169/metasploit_in_termux/actions/workflows/metasploit_in_termux_test.yml)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Willie169/metasploit_in_termux?style=social)
 
 ## How to Install
