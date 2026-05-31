@@ -44,8 +44,9 @@ Before my forking, the original repo couldn't pass GitHub Actions CI Testing and
 - Fix SQLite3 error by clone the [repo](https://github.com/sparklemotion/sqlite3-ruby/tree/main), compile, and `gem install` directly.
 - `termux-fix-shebang` the binaries.
 - Go to `~` at start.
+- Expand the GitHub Action CI testing to cover the `arm` architecture
 
-GitHub Actions CI Testing now run without error.
+GitHub Actions CI Testing now run without error on both `arm` and `aarch64` architechture.
 
 ## Credits
 
