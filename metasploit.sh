@@ -10,6 +10,7 @@ center_banner() {
         "+-+-+-+-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+"
         "+-+-+ +-+-+-+-+-+-+-+-+-+-+"
         "|b|y| |G|u|s|h|m|a|z|u|k|o|"
+        "|a|n|d| |W|i|l|l|i|e|1|6|9|"
         "+-+-+ +-+-+-+-+-+-+-+-+-+-+"
     )
 
@@ -83,6 +84,12 @@ gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-functi
 BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
 gem install bundler -v "${BUNDLER_VERSION}"
 
+# Fix rake error
+# The error doesn't happen in GitHub Action but does in some real phone
+# And this fix fixes it
+RAKE_VERSION=$(cat Gemfile.lock | grep -i rake | sed 's/rake [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
+gem install rake -v "${RAKE_VERSION}"
+
 # Fix sqlite3 error
 SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
 git clone https://github.com/sparklemotion/sqlite3-ruby.git
@@ -91,6 +98,7 @@ git checkout "v${SQLITE3_VERSION}"
 gem build sqlite3.gemspec
 gem install "sqlite3-${SQLITE3_VERSION}.gem" -- --enable-system-libraries
 cd ..
+rm -rf sqlite3-ruby
 bundle config set path.system true
 
 gem install actionpack
