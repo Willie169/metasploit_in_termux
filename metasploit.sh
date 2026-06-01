@@ -71,18 +71,20 @@ git clone https://github.com/rapid7/metasploit-framework.git --depth=1 ${PREFIX}
 # Install Metasploit
 center "* Installation..."
 cd ${PREFIX}/opt/metasploit-framework
-gem install bundler
+
+# Fix bundler error
+BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
+gem install bundler -v "${BUNDLER_VERSION}"
+
+# Fix nokogiri
+MINI_PORTILE_VERSION=$(cat Gemfile.lock | grep -i mini_portile2 | sed 's/mini_portile2 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
 NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
 # by overriding cflags nokogiri will install or you can simply declare a void function
 #  you might have seen this error while installing nokogiri `xmlSetStructuredErrorFunc((void *)rb_error_list, Nokogiri_error_array_pusher);`
 #  solution : void xmlSetStructuredErrorFunc(void *rb_error_list, void *Nokogiri_error_array_pusher); you can set any parameter name
 #  for sake of simplicity tweaking cflags is better than declaring a void function for every c file
-
+gem install mini_portile2 -v $MINI_PORTILE_VERSION
 gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-function-declaration -Wno-deprecated-declarations -Wno-incompatible-function-pointer-types" --use-system-libraries
-
-# Fix bundler error
-BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
-gem install bundler -v "${BUNDLER_VERSION}"
 
 # Fix rake error
 # The error doesn't happen in GitHub Action but does in some real phone
