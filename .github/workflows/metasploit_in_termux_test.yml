@@ -7,6 +7,7 @@ on:
 
 jobs:
   metasploit_in_termux_test:
+    timeout-minutes: 360
     strategy:
       matrix:
         include:
@@ -18,15 +19,18 @@ jobs:
 
     steps:
       - name: Checkout repo (use this branch's metasploit.sh)
+        timeout-minutes: 360
         uses: actions/checkout@v4
 
       - name: Install DNS tools on host
+        timeout-minutes: 360
         run: |
           set -euxo pipefail
           sudo apt-get update
           sudo apt-get install -y dnsutils
 
       - name: Generate static DNS for Termux (/system/etc/hosts, IPv4 only)
+        timeout-minutes: 360
         id: gen-hosts
         shell: bash
         run: |
@@ -76,6 +80,7 @@ jobs:
           fi
 
       - name: Start Termux (aarch64) with static hosts and repo mounted
+        timeout-minutes: 360
         run: |
           set -euxo pipefail
           docker pull termux/termux-docker
@@ -90,6 +95,7 @@ jobs:
           docker ps -a
 
       - name: Seed apt mirror & update inside Termux
+        timeout-minutes: 360
         run: |
           set -euxo pipefail
           # Ensure container is running
@@ -105,6 +111,7 @@ jobs:
           '
 
       - name: Run metasploit installer from this repo
+        timeout-minutes: 360
         run: |
           set -euxo pipefail
           id=$(docker ps -q -f name=termux)
@@ -118,12 +125,14 @@ jobs:
           '
 
       - name: Smoke test msfconsole (non-interactive)
+        timeout-minutes: 360
         run: |
           set -euxo pipefail
           id=$(docker ps -q -f name=termux)
           docker exec -u system "$id" bash -lc 'msfconsole -qx "version; exit"' | tee msfconsole-version.txt
 
       - name: Test msfvenom payload generation
+        timeout-minutes: 360
         run: |
           set -euxo pipefail
           id=$(docker ps -q -f name=termux)
@@ -136,14 +145,7 @@ jobs:
             file my_payload.exe || echo "file command not available, but payload exists"
           '
 
-      - name: Upload logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: termux-aarch64-logs
-          path: |
-            termux-hosts
-
       - name: Cleanup
+        timeout-minutes: 360
         if: always()
         run: docker rm -f termux || true
