@@ -5,13 +5,13 @@ center_banner() {
     local termwidth=$(stty size | cut -d" " -f2)
 
     local banner=(
-        "+-+-+-+-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+"
+        "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         "|M|e|t|a|s|p|l|o|i|t| |i|n| |T|e|r|m|u|x|"
-        "+-+-+-+-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+"
-        "+-+-+ +-+-+-+-+-+-+-+-+-+-+"
+        "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         "|b|y| |G|u|s|h|m|a|z|u|k|o|"
         "|a|n|d| |W|i|l|l|i|e|1|6|9|"
-        "+-+-+ +-+-+-+-+-+-+-+-+-+-+"
+        "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
     )
 
     echo -e "\e[34m" # Blue color
@@ -86,11 +86,13 @@ NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/
 gem install mini_portile2 -v $MINI_PORTILE_VERSION
 gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-function-declaration -Wno-deprecated-declarations -Wno-incompatible-function-pointer-types" --use-system-libraries
 
-# Fix rake error
-# The error doesn't happen in GitHub Action but does in some real phone
-# And this fix fixes it
+# Fix rake and timecop error
+# The error do not happen in GitHub Action but do in some real phones
+# And my fixes fix them
 RAKE_VERSION=$(cat Gemfile.lock | grep -i rake | sed 's/rake [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
 gem install rake -v "${RAKE_VERSION}"
+TIMECOP_VERSION=$(cat Gemfile.lock | grep -i timecop | sed 's/timecop [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
+gem install timecop -v "${TIMECOP_VERSION}"
 
 # Fix sqlite3 error
 SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
