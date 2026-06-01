@@ -43,8 +43,8 @@ Before my forking, the original repo couldn't pass GitHub Action CI Testing and 
 - Fix Ruby 3.4.0 & Nokogiri by [qrt2](https://github.com/qrt2/msf-termux-ruby34).
 - Change `grep` to without `-P` flag since it may not be available on all versions.
 - Fix bundler error by install the version of it specified in lock file with `gem install` directly.
+- Fix rake and yard error by install the version of them specified in lock file with `gem install` directly. The error do not happen in GitHub Action but do in some real phones. And my fixes fix them.
 - Fix nokogiri error by install the version of mini\_portile2 and nokogiri specified in lock file with `gem install` directly.
-- Fix rake and timecop error by install the version of them specified in lock file with `gem install` directly. The error do not happen in GitHub Action but do in some real phones. And my fixes fix them.
 - Fix SQLite3 error by clone the [repo](https://github.com/sparklemotion/sqlite3-ruby/tree/main), compile, and `gem install` directly.
 - `termux-fix-shebang` the binaries.
 - Go to `~` at start.

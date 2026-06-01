@@ -36,6 +36,7 @@ center "Loading..."
 source <(echo "c3Bpbm5lcj0oICd8JyAnLycgJy0nICdcJyApOwoKY291bnQoKXsKICBzcGluICYKICBwaWQ9JCEKICBmb3IgaSBpbiBgc2VxIDEgMTBgCiAgZG8KICAgIHNsZWVwIDE7CiAgZG9uZQoKICBraWxsICRwaWQgIAp9CgpzcGluKCl7CiAgd2hpbGUgWyAxIF0KICBkbyAKICAgIGZvciBpIGluICR7c3Bpbm5lcltAXX07IAogICAgZG8gCiAgICAgIGVjaG8gLW5lICJcciRpIjsKICAgICAgc2xlZXAgMC4yOwogICAgZG9uZTsKICBkb25lCn0KCmNvdW50" | base64 -d)
 
 # Dependencies Installation
+printf '\n'
 center "* Dependencies installation..."
 # Skip mirror selection if sources.list is already configured (for CI)
 if ! grep -q "packages.termux.dev" /data/data/com.termux/files/usr/etc/apt/sources.list 2>/dev/null; then
@@ -76,6 +77,14 @@ cd ${PREFIX}/opt/metasploit-framework
 BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
 gem install bundler -v "${BUNDLER_VERSION}"
 
+# Fix rake and yard error
+# The error do not happen in GitHub Action but do in some real phones
+# And my fixes fix them
+RAKE_VERSION=$(cat Gemfile.lock | grep -i rake | sed 's/rake [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
+gem install rake -v "${RAKE_VERSION}"
+YARD_VERSION=$(cat Gemfile.lock | grep -i yard | sed 's/yard [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
+gem install rake -v "${YARD_VERSION}"
+
 # Fix nokogiri
 MINI_PORTILE_VERSION=$(cat Gemfile.lock | grep -i mini_portile2 | sed 's/mini_portile2 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
 NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
@@ -85,14 +94,6 @@ NOKOGIRI_VERSION=$(cat Gemfile.lock | grep -i nokogiri | sed 's/nokogiri [\(\)]/
 #  for sake of simplicity tweaking cflags is better than declaring a void function for every c file
 gem install mini_portile2 -v $MINI_PORTILE_VERSION
 gem install nokogiri -v $NOKOGIRI_VERSION -- --with-cflags="-Wno-implicit-function-declaration -Wno-deprecated-declarations -Wno-incompatible-function-pointer-types" --use-system-libraries
-
-# Fix rake and timecop error
-# The error do not happen in GitHub Action but do in some real phones
-# And my fixes fix them
-RAKE_VERSION=$(cat Gemfile.lock | grep -i rake | sed 's/rake [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
-gem install rake -v "${RAKE_VERSION}"
-TIMECOP_VERSION=$(cat Gemfile.lock | grep -i timecop | sed 's/timecop [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
-gem install timecop -v "${TIMECOP_VERSION}"
 
 # Fix sqlite3 error
 SQLITE3_VERSION=$(cat Gemfile.lock | grep -i sqlite3 | sed 's/sqlite3 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
