@@ -36,11 +36,11 @@ msfconsole
 
 This installation script is automatically tested via GitHub Action CI on `ubuntu-24.04-arm` with `termux/termux-docker` on both `arm` and `aarch64` architecture with startup and version check (`msfconsole -qx "version; exit"`) and payload generation test (`msfvenom -p windows/meterpreter/reverse_tcp`) verification.
 
-## Fork
+## Forking
 
 This repo is a fork of [gushmazuko's metasploit_in_termux](https://github.com/gushmazuko/metasploit_in_termux).
 
-Before my forking, the original repo couldn't pass GitHub Action CI Testing and failed to install metasploit in Termux. The following fixes and improvements are added:
+Before my forking, the original repo couldn't pass GitHub Action CI Testing and failed to install Metasploit Framework in both Termux Docker and Termux on a real phone. The following fixes and improvements are added at my forking:
 
 - Fix Ruby 3.4.0 & Nokogiri by [qrt2](https://github.com/qrt2/msf-termux-ruby34).
 - Change `grep` to without `-P` flag since it may not be available on all versions.
@@ -52,7 +52,7 @@ Before my forking, the original repo couldn't pass GitHub Action CI Testing and 
 - Go to `~` at start.
 - Expand the GitHub Action CI testing to cover the `arm` architecture.
 
-Results:
+And this repo achieved the following results:
 - GitHub Action CI Testing runs without error on both `arm` and `aarch64` architechture.
 - I installed without error on my phone.
 
