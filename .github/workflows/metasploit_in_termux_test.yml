@@ -3,6 +3,9 @@ name: metasploit_in_termux_test
 on:
   workflow_dispatch:
   push:
+    paths:
+      - ".github/workflows/**"
+      - "metasploit.sh"
   pull_request:
 
 jobs:
