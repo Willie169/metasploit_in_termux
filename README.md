@@ -3,6 +3,8 @@
 [![GitHub Action CI](https://github.com/Willie169/metasploit_in_termux/actions/workflows/metasploit_in_termux_test.yml/badge.svg)](https://github.com/Willie169/metasploit_in_termux/actions/workflows/metasploit_in_termux_test.yml)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Willie169/metasploit_in_termux?style=social)
 
+Install [Metasploit Framework](https://github.com/rapid7/metasploit-framework) in Termux.
+
 ## How to Install
 
 ### Before
