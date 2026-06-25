@@ -83,7 +83,7 @@ gem install bundler -v "${BUNDLER_VERSION}"
 RAKE_VERSION=$(cat Gemfile.lock | grep -i rake | sed 's/rake [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
 gem install rake -v "${RAKE_VERSION}"
 YARD_VERSION=$(cat Gemfile.lock | grep -i yard | sed 's/yard [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
-gem install rake -v "${YARD_VERSION}"
+gem install yard -v "${YARD_VERSION}"
 
 # Fix nokogiri
 MINI_PORTILE_VERSION=$(cat Gemfile.lock | grep -i mini_portile2 | sed 's/mini_portile2 [\(\)]/(/g' | cut -d ' ' -f 5 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
