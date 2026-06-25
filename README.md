@@ -34,7 +34,7 @@ msfconsole
 
 ## CI Testing
 
-This installation script is automatically tested via GitHub Action CI on `ubuntu-24.04-arm` with `termux/termux-docker` on both `arm` and `aarch64` architecture with startup and version check (`msfconsole -qx "version; exit"`) and payload generation test (`msfvenom -p windows/meterpreter/reverse_tcp`) verification.
+This installation script is automatically tested via GitHub Action CI on `ubuntu-24.04-arm` using `termux/termux-docker` with startup and version check (`msfconsole -qx "version; exit"`) and payload generation test (`msfvenom -p windows/meterpreter/reverse_tcp`) verification.
 
 ## Forking
 
@@ -50,10 +50,9 @@ Before my forking, the original repo couldn't pass GitHub Action CI Testing and 
 - Fix SQLite3 error by clone the [repo](https://github.com/sparklemotion/sqlite3-ruby/tree/main), compile, and `gem install` directly.
 - `termux-fix-shebang` the binaries.
 - Go to `~` at start.
-- Expand the GitHub Action CI testing to cover the `arm` architecture.
 
 And this repo achieved the following results:
-- GitHub Action CI Testing runs without error on both `arm` and `aarch64` architechture.
+- GitHub Action CI Testing runs without error.
 - I installed without error on my phone.
 
 ## Credits
