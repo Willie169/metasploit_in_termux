@@ -74,6 +74,7 @@ center "* Installation..."
 cd ${PREFIX}/opt/metasploit-framework
 
 # Fix bundler error
+gem install bundler
 BUNDLER_VERSION="$(sed -n '/BUNDLED WITH/{n;s/^ *//;p}' Gemfile.lock)"
 gem install bundler -v "${BUNDLER_VERSION}"
 
