@@ -2,7 +2,7 @@
 
 # Banner and center functions
 center_banner() {
-    local termwidth=$(stty size | cut -d" " -f2)
+    local termwidth=$(stty size | cut -d" " -f2 || true)
 
     local banner=(
         "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
@@ -22,7 +22,7 @@ center_banner() {
 }
 
 center() {
-  termwidth=$(stty size | cut -d" " -f2)
+  termwidth=$(stty size | cut -d" " -f2 || true)
   padding="$(printf '%0.1s' ={1..500})"
   printf '%*.*s %s %*.*s\n' 0 "$(((termwidth-2-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-1-${#1})/2))" "$padding"
 }
