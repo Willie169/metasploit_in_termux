@@ -50,6 +50,7 @@ Before my forking, the original repo couldn't pass GitHub Action CI Testing and 
 - Fix SQLite3 error by clone the [repo](https://github.com/sparklemotion/sqlite3-ruby/tree/main), compile, and `gem install` directly.
 - `termux-fix-shebang` the binaries.
 - Go to `~` at start.
+- Restructure GitHub Action CI so that it doesn't rely on DNS enumeration and is shorter and stricter.
 
 And this repo achieved the following results:
 - GitHub Action CI Testing runs without error.
