@@ -1,5 +1,4 @@
 name: metasploit_in_termux_test
-
 on:
   workflow_dispatch:
   push:
@@ -7,141 +6,40 @@ on:
       - ".github/workflows/metasploit_in_termux_test.yml"
       - "metasploit.sh"
   pull_request:
-
 jobs:
   metasploit_in_termux_test:
     timeout-minutes: 360
     runs-on: ubuntu-24.04-arm
-
     steps:
-      - name: Checkout repo (use this branch's metasploit.sh)
+      - name: Prepare
         timeout-minutes: 360
-        uses: actions/checkout@v4
-
-      - name: Install DNS tools on host
+        run: |
+          cd ~
+          sudo apt update
+          sudo DEBIAN_FRONTEND=noninteractive apt install curl git -y
+          source /etc/os-release
+          curl --retry 100 --retry-connrefused --retry-delay 5 -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc >/dev/null
+          echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $UBUNTU_CODENAME stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+          sudo apt update
+          sudo DEBIAN_FRONTEND=noninteractive apt install docker-ce -y
+          git clone https://github.com/Willie169/metasploit_in_termux.git
+          cd metasploit_in_termux
+          sed -Ei 's|(#!/data/data/com\.termux/files/usr/bin/bash)|\1\nset -euxo pipefail|' metasploit.sh
+      - name: Main
         timeout-minutes: 360
         run: |
           set -euxo pipefail
-          sudo apt-get update
-          sudo apt-get install -y dnsutils
-
-      - name: Generate static DNS for Termux (/system/etc/hosts, IPv4 only)
-        timeout-minutes: 360
-        id: gen-hosts
-        shell: bash
-        run: |
-          set -euxo pipefail
-          HOSTS="termux-hosts"
-          : > "$HOSTS"
-
-          # Domains your installer typically needs
-          domains=(
-            packages.termux.dev
-            raw.githubusercontent.com
-            packages-cf.termux.dev
-            termux.dev
-            github.com
-            rubygems.org
-            index.rubygems.org
-            pypi.org
-            files.pythonhosted.org
-          )
-
-          # Resolve each to an IPv4 address and write in hosts format
-          missing=()
-          for d in "${domains[@]}"; do
-            # Get only IPv4 addresses, filter out CNAME responses
-            ip4=$(dig +short A "$d" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || true)
-            if [[ -n "$ip4" ]]; then
-              echo "$ip4 $d" >> "$HOSTS"
-            else
-              missing+=("$d")
-            fi
-          done
-
-          echo "---- $HOSTS ----"
-          cat "$HOSTS"
-
-          # Fail early if we couldn't resolve critical domains on the host
-          critical=(packages.termux.dev raw.githubusercontent.com github.com rubygems.org)
-          for c in "${critical[@]}"; do
-            if ! grep -q " $c$" "$HOSTS"; then
-              echo "ERROR: Could not resolve critical domain: $c"
-              exit 1
-            fi
-          done
-
-          if [[ ${#missing[@]} -gt 0 ]]; then
-            echo "WARN: Could not resolve some domains on host: ${missing[*]}"
-          fi
-
-      - name: Start Termux (aarch64) with static hosts and repo mounted
-        timeout-minutes: 360
-        run: |
-          set -euxo pipefail
-          docker pull termux/termux-docker
-          docker rm -f termux || true
-          docker run -d -t --name termux \
-            --security-opt seccomp=unconfined \
-            -v "$PWD/termux-hosts:/system/etc/hosts:ro" \
-            -v "$GITHUB_WORKSPACE:/workspace:ro" \
-            termux/termux-docker:aarch64
-          # give runit/env a moment to settle
-          sleep 3
-          docker ps -a
-
-      - name: Seed apt mirror & update inside Termux
-        timeout-minutes: 360
-        run: |
-          set -euxo pipefail
-          # Ensure container is running
-          docker start termux || true
-          sleep 2
-          id=$(docker ps -q -f name=termux)
-          docker exec -u system "$id" bash -lc '
-            set -eux
+          docker run --rm -v "$HOME/metasploit_in_termux:/data/data/com.termux/files/home/metasploit_in_termux" -w "/data/data/com.termux/files/home/metasploit_in_termux" --privileged termux/termux-docker bash -c '
+            set -euxo pipefail
             # Use primary Termux mirror (bypasses pkg mirror selection)
             echo "deb https://packages.termux.dev/apt/termux-main stable main" > /data/data/com.termux/files/usr/etc/apt/sources.list
-            apt update -y
-            DEBIAN_FRONTEND=noninteractive apt install -y curl git libssh2 -o Dpkg::Options::="--force-confnew"
-          '
-
-      - name: Run metasploit installer from this repo
-        timeout-minutes: 360
-        run: |
-          set -euxo pipefail
-          id=$(docker ps -q -f name=termux)
-          docker exec -u system "$id" bash -lc '
-            set -eux
-            # copy script from checked-out repo into $HOME
-            cp /workspace/metasploit.sh "$HOME/metasploit.sh"
-            chmod +x "$HOME/metasploit.sh"
-            # run and tee to a log for artifacting on failure
-            "$HOME/metasploit.sh" |& tee "$HOME/metasploit_install.log"
-          '
-
-      - name: Smoke test msfconsole (non-interactive)
-        timeout-minutes: 360
-        run: |
-          set -euxo pipefail
-          id=$(docker ps -q -f name=termux)
-          docker exec -u system "$id" bash -lc 'msfconsole -qx "version; exit"' | tee msfconsole-version.txt
-
-      - name: Test msfvenom payload generation
-        timeout-minutes: 360
-        run: |
-          set -euxo pipefail
-          id=$(docker ps -q -f name=termux)
-          docker exec -u system "$id" bash -lc '
-            set -eux
+            apt update -y || true
+            DEBIAN_FRONTEND=noninteractive apt install -y curl git libssh2 -o Dpkg::Options::="--force-confnew" || true
+            ./metasploit.sh
+            msfconsole -qx "version; exit"
             echo "Testing msfvenom payload generation..."
             msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.0.1 lport=4444 -f exe -o my_payload.exe
             echo "Payload generation completed successfully!"
             ls -la my_payload.exe
             file my_payload.exe || echo "file command not available, but payload exists"
           '
-
-      - name: Cleanup
-        timeout-minutes: 360
-        if: always()
-        run: docker rm -f termux || true
