@@ -29,7 +29,7 @@ jobs:
         timeout-minutes: 360
         run: |
           set -euxo pipefail
-          docker run --rm -v "$HOME/metasploit_in_termux:/data/data/com.termux/files/home/metasploit_in_termux" -w "/data/data/com.termux/files/home/metasploit_in_termux" --privileged termux/termux-docker bash -c '
+          sudo docker run --rm -v "$HOME/metasploit_in_termux:/data/data/com.termux/files/home/metasploit_in_termux" -w "/data/data/com.termux/files/home/metasploit_in_termux" --privileged termux/termux-docker bash -c '
             set -euxo pipefail
             # Use primary Termux mirror (bypasses pkg mirror selection)
             echo "deb https://packages.termux.dev/apt/termux-main stable main" > /data/data/com.termux/files/usr/etc/apt/sources.list
